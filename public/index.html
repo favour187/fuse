@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1" />
+    <meta name="theme-color" content="#140b08" />
+    <title>FUSE — Don't be holding it</title>
+    <meta name="description" content="A real-time multiplayer bomb-tag arena. Create a room, send the link, play together." />
+    <meta property="og:title" content="FUSE — Don't be holding it" />
+    <meta property="og:description" content="Create a room, send the link, play together. One live bomb. Don't be holding it." />
+    <meta property="og:image" content="/banner.png" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%23140b08'/%3E%3Ccircle cx='32' cy='36' r='14' fill='%23ff5a36'/%3E%3Cpath d='M36 22c4-6 10-8 12-6-3 5-2 10 1 14-7 0-11-4-13-8z' fill='%23ffd166'/%3E%3C/svg%3E" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <div id="grain"></div>
+
+    <div id="screen-home" class="screen">
+      <div class="home-orb home-orb-a"></div>
+      <div class="home-orb home-orb-b"></div>
+      <header class="topbar">
+        <span class="pill">Web · Realtime · 2–6 players</span>
+        <span class="pill ghost">First to 3 rounds</span>
+      </header>
+      <main class="home-main">
+        <p class="eyebrow">Send the link. Play together.</p>
+        <h1 class="wordmark">FUSE</h1>
+        <p class="tagline">Don't be holding it.</p>
+        <p class="lede">
+          One live bomb. Pass it by bumping, dump it with a throw.
+          When the timer hits zero, whoever's too close is gone.
+        </p>
+        <form id="home-form" class="home-form" autocomplete="off">
+          <label class="field">
+            <span>Your name</span>
+            <input id="name-input" maxlength="14" placeholder="Blaze" />
+          </label>
+          <div class="home-actions">
+            <button type="button" id="btn-create" class="btn primary">Create a room</button>
+            <button type="button" id="btn-bots" class="btn">Practice vs bots</button>
+          </div>
+          <div class="join-row">
+            <input id="code-input" maxlength="4" placeholder="CODE" class="code-input" spellcheck="false" />
+            <button type="button" id="btn-join" class="btn">Join</button>
+          </div>
+        </form>
+        <ul class="how">
+          <li><kbd>WASD</kbd> move</li>
+          <li><kbd>SPACE</kbd> dash</li>
+          <li><kbd>E</kbd> / click throw</li>
+        </ul>
+      </main>
+      <p id="home-error" class="error" hidden></p>
+    </div>
+
+    <div id="screen-lobby" class="screen" hidden>
+      <main class="lobby-wrap">
+        <p class="eyebrow">Room ready</p>
+        <h2>Invite anyone.</h2>
+        <p class="lede tight">Judges, friends, teammates — they open the link and they're in. No accounts.</p>
+        <div class="code-card">
+          <div>
+            <span class="muted">Room code</span>
+            <div id="lobby-code" class="big-code">----</div>
+          </div>
+          <div class="code-actions">
+            <button type="button" id="btn-copy" class="btn">Copy link</button>
+            <button type="button" id="btn-copy-code" class="btn">Copy code</button>
+          </div>
+        </div>
+        <div class="lobby-grid">
+          <section>
+            <div class="section-head">
+              <h3>Players</h3>
+              <span id="lobby-count" class="muted">0 / 6</span>
+            </div>
+            <ul id="lobby-players" class="player-list"></ul>
+          </section>
+          <section class="lobby-side">
+            <p class="hint">
+              First to <strong>3 rounds</strong> wins the match.
+              Holding the fuse makes you slightly faster — and a target.
+            </p>
+            <div class="host-tools" id="host-tools" hidden>
+              <button type="button" id="btn-add-bot" class="btn">Add bot</button>
+              <button type="button" id="btn-remove-bot" class="btn">Remove bot</button>
+              <button type="button" id="btn-start" class="btn primary wide">Start match</button>
+            </div>
+            <p id="guest-wait" class="muted" hidden>Waiting for the host to start…</p>
+          </section>
+        </div>
+        <button type="button" id="btn-leave" class="text-btn">Leave room</button>
+      </main>
+    </div>
+
+    <div id="screen-game" class="screen game-screen" hidden>
+      <canvas id="game"></canvas>
+      <div id="hud">
+        <div class="hud-top">
+          <div class="hud-round">
+            <span class="muted">Round</span>
+            <strong id="hud-round">1</strong>
+          </div>
+          <div id="hud-timer" class="hud-timer">0.0</div>
+          <div id="hud-scores" class="hud-scores"></div>
+        </div>
+        <div id="hud-banner" class="hud-banner" hidden></div>
+        <div class="hud-bottom">
+          <div class="meter">
+            <span>Dash</span>
+            <div class="bar"><i id="dash-bar"></i></div>
+          </div>
+          <div class="hud-keys">
+            <span><kbd>WASD</kbd> move</span>
+            <span><kbd>SPACE</kbd> dash</span>
+            <span><kbd>E</kbd> throw</span>
+          </div>
+          <div class="hud-code">Room <strong id="hud-code">----</strong></div>
+        </div>
+      </div>
+      <div id="touch" class="touch" hidden>
+        <div id="stick" class="stick">
+          <div id="knob" class="knob"></div>
+        </div>
+        <div class="touch-btns">
+          <button type="button" id="btn-throw" class="round-btn">THROW</button>
+          <button type="button" id="btn-dash" class="round-btn accent">DASH</button>
+        </div>
+      </div>
+      <div id="overlay" class="overlay" hidden>
+        <div class="overlay-card">
+          <p id="overlay-kicker" class="eyebrow">Round over</p>
+          <h2 id="overlay-title">Someone wins</h2>
+          <p id="overlay-sub" class="lede tight"></p>
+          <div id="overlay-actions" class="home-actions"></div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/client.js"></script>
+  </body>
+</html>

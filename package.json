@@ -1,0 +1,20 @@
+{
+  "name": "fuse",
+  "version": "1.0.0",
+  "description": "FUSE — Don't be holding it. A real-time multiplayer bomb-tag arena for the browser.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": ["game", "multiplayer", "web-game", "hackathon"],
+  "author": "FUSE",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "express": "^4.21.2",
+    "socket.io": "^4.8.1"
+  }
+}
