@@ -2,7 +2,7 @@
 
 **Don't be holding it.**
 
-A real-time multiplayer bomb-tag arena for the browser. Create a room, send the link, play together. Built for the [BTT Web Game Jam — Summer 2026](https://btt-web-game-jam.devpost.com/).
+A classy stickman-party arena for the browser — Mini Militia camera, party-game chaos. Create a room, send the link, play together. Built for [Reverie Hacks 2026](https://reverie-hacks-2026.devpost.com/).
 
 ![FUSE](https://img.shields.io/badge/players-2--6-ff5a36) ![stack](https://img.shields.io/badge/stack-Node%20%2B%20Socket.io-ffd166)
 
@@ -66,7 +66,7 @@ Put Caddy or nginx in front if you want HTTPS. WebSockets should be proxied thro
 
 - **Server-authoritative** simulation at 30 Hz (`game.js`)
 - **Socket.io** rooms, host migration, bot players
-- **Canvas** renderer with interpolation, squash-and-stretch characters, particles, screen shake
+- **Three.js** 3D arena (shadows, camera follow, blob characters, particles, screen shake)
 - **Web Audio** procedural SFX — no asset pack, no licenses
 - Zero build step. One `npm start`.
 
