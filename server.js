@@ -152,7 +152,7 @@ function leaveCurrent(socket) {
   if (room.phase !== 'lobby') {
     const aliveHumans = humans.filter((p) => p.alive);
     if (aliveHumans.length + [...room.players.values()].filter((p) => p.isBot && p.alive).length <= 1) {
-      /* let the sim resolve next tick */
+
     }
   }
   if (room.phase === 'lobby') emitLobby(room);
